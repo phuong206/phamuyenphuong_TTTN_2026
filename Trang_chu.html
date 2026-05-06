@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>E-Menu</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>E-Menu System</h1>
+  <p>Chọn vai trò để tiếp tục</p>
+
+  <div class="role-box">
+
+    <div class="card" onclick="goLogin('admin')">
+      <div class="icon">👤</div>
+      <h3>Quản lý</h3>
+    </div>
+
+    <div class="card" onclick="goLogin('nhanvien')">
+      <div class="icon">👥</div>
+      <h3>Nhân viên</h3>
+    </div>
+
+    <div class="card" onclick="goCustomer()">
+      <div class="icon">📱</div>
+      <h3>Khách hàng</h3>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function goLogin(role){
+  window.location.href = "login/login.html?role=" + role;
+}
+
+function goCustomer(){
+  window.location.href = "khachhang/html/trang_chu.html";
+}
+</script>
+
+</body>
+</html>

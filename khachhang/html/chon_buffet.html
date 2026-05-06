@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: #020617;
+            color: white;
+            font-family: sans-serif;
+            padding: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #38bdf8;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        input {
+            display: none;
+        }
+
+        input:checked+.card {
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px #38bdf8;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: #38bdf8;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Chọn Buffet</h2>
+
+    <form action="../actions/chon_lau.php" method="GET">
+
+        <div class="grid">
+
+            <label>
+                <input type="radio" name="buffet" value="299" required>
+                <div class="card">
+                    <h3>299K</h3>
+                    <p>Heo + rau</p>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="buffet" value="399">
+                <div class="card">
+                    <h3>399K</h3>
+                    <p>+ bò + hải sản</p>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="buffet" value="499">
+                <div class="card">
+                    <h3>499K</h3>
+                    <p>Full cao cấp</p>
+                </div>
+            </label>
+
+            <label>
+                <input type="checkbox" name="trang_mieng" value="1">
+                <div class="card">
+                    <h3>+ Tráng miệng 49K</h3>
+                </div>
+            </label>
+
+        </div>
+
+        <button class="btn">Tiếp tục</button>
+
+    </form>
+
+</body>
+
+</html>

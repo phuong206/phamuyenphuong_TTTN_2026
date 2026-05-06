@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+
+  <link rel="stylesheet" href="css/login.css">
+
+  <!-- icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="back-btn" onclick="goBack()">
+      <i class="fa-solid fa-arrow-left"></i>
+    </div>
+
+    <h2 id="title">Đăng nhập</h2>
+
+    <input type="hidden" id="role">
+
+    <input type="text" id="username" placeholder="Email hoặc username">
+    <input type="password" id="password" placeholder="Mật khẩu">
+
+    <button onclick="login()">Đăng nhập</button>
+
+    <p id="forgot" onclick="forgotPassword()">Quên mật khẩu?</p>
+  </div>
+
+  <script src="js/login.js"></script>
+</body>
+
+</html>
