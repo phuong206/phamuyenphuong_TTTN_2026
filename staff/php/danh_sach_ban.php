@@ -10,7 +10,11 @@ $stmt = $conn->query("
         SELECT COUNT(*) 
         FROM don_hang d 
         WHERE d.id_ban = b.id 
-        AND d.trang_thai = 'cho_xu_ly'
+
+        AND d.trang_thai != 'da_thanh_toan'
+
+        AND d.trang_thai != 'da_huy'
+
     ) as co_khach
     FROM ban b
 ");
@@ -197,12 +201,12 @@ z-index:999;
             $id = $ban['id'];
             $so_ban = $ban['so_ban'];
 
-            if ($ban['co_khach'] > 0) {
-                $text = "Có khách";
-                $class = "co_khach";
-            } elseif ($ban['trang_thai'] == 3) {
+            if ($ban['trang_thai'] == 3) {
                 $text = "Đặt trước";
                 $class = "dat_truoc";
+            } elseif ($ban['co_khach'] > 0) {
+                $text = "Có khách";
+                $class = "co_khach";
             } else {
                 $text = "Trống";
                 $class = "trong";

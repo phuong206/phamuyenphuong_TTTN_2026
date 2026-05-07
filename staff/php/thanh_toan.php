@@ -34,11 +34,15 @@ $ds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $tong = 0;
 
 if ($loai == "buffet") {
-    $tong = $gia_goi[$goi] * $so_khach;
+    $tong = ($gia_goi[$goi] ?? 0) * $so_khach;
 
     foreach ($ds as $m) {
-        if ($m['goi_buffet'] != $gia_goi[$goi]) {
-            $tong += $m['so_luong'] * $m['gia'];
+        if ($m['goi_buffet'] > $goi) {
+
+            $tong +=
+                $m['so_luong']
+                *
+                $m['gia'];
         }
     }
 
@@ -112,10 +116,53 @@ $tong_cong = $tong + $vat;
         <h2>Hóa đơn</h2>
 
         <?php foreach ($ds as $m): ?>
+
+            <?php
+
+            $thanh_tien = 0;
+
+            /* món lẻ */
+
+            if ($loai == "le") {
+
+                $thanh_tien =
+                    $m['so_luong']
+                    *
+                    $m['gia'];
+            }
+
+            /* buffet */ else {
+
+                /* ngoài gói */
+
+                if ($m['goi_buffet'] > $goi) {
+
+                    $thanh_tien =
+                        $m['so_luong']
+                        *
+                        $m['gia'];
+                }
+            }
+
+            ?>
+
             <div class="item">
-                <span><?= $m['ten_mon'] ?> x<?= $m['so_luong'] ?></span>
-                <span><?= number_format($m['so_luong'] * $m['gia']) ?>đ</span>
+
+                <span>
+
+                    <?= $m['ten_mon'] ?>
+                    x<?= $m['so_luong'] ?>
+
+                </span>
+
+                <span>
+
+                    <?= number_format($thanh_tien) ?>đ
+
+                </span>
+
             </div>
+
         <?php endforeach; ?>
 
         <div class="total">

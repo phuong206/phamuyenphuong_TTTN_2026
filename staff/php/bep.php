@@ -12,22 +12,20 @@ $conn = $db->connect();
    CHECK LOGIN
 ========================= */
 
-if(!isset($_SESSION['id_vai_tro'])){
+if (!isset($_SESSION['id_vai_tro'])) {
 
     header("Location: ../../login/login.html");
 
     exit();
-
 }
 
 /* =========================
    CHỈ BẾP ĐƯỢC VÀO
 ========================= */
 
-if($_SESSION['id_vai_tro'] != 6){
+if ($_SESSION['id_vai_tro'] != 6) {
 
     die("Bạn không có quyền truy cập");
-
 }
 
 /* =========================
@@ -51,7 +49,7 @@ ON chi_tiet_don_hang.id_don_hang = don_hang.id
 LEFT JOIN ban
 ON don_hang.id_ban = ban.id
 
-WHERE chi_tiet_don_hang.trang_thai='chua_gui'
+WHERE chi_tiet_don_hang.trang_thai != 'da_phuc_vu'
 
 ORDER BY chi_tiet_don_hang.id DESC
 ";
@@ -61,7 +59,7 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 
 $danhSach =
-$stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
@@ -70,254 +68,273 @@ $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<title>Bếp</title>
+    <title>Bếp</title>
 
-<style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial;
-}
+        body {
 
-body{
+            background:
+                linear-gradient(135deg,
+                    #0f172a,
+                    #1e293b,
+                    #334155);
 
-    background:
-    linear-gradient(
-        135deg,
-        #0f172a,
-        #1e293b,
-        #334155
-    );
+            padding: 30px;
 
-    padding:30px;
+            min-height: 100vh;
+        }
 
-    min-height:100vh;
-}
+        h1 {
 
-h1{
+            margin-bottom: 25px;
 
-    margin-bottom:25px;
+            color: #0f172a;
+        }
 
-    color:#0f172a;
-}
-.top-bar{
+        .top-bar {
 
-    display:flex;
+            display: flex;
 
-    justify-content:space-between;
+            justify-content: space-between;
 
-    align-items:center;
+            align-items: center;
 
-    margin-bottom:30px;
-}
+            margin-bottom: 30px;
+        }
 
-.top-bar h1{
+        .top-bar h1 {
 
-    color:white;
+            color: white;
 
-    margin:0;
-}
+            margin: 0;
+        }
 
-.back-btn{
+        .back-btn {
 
-    text-decoration:none;
+            text-decoration: none;
 
-    background:white;
+            background: white;
 
-    color:#0f172a;
+            color: #0f172a;
 
-    padding:12px 18px;
+            padding: 12px 18px;
 
-    border-radius:12px;
+            border-radius: 12px;
 
-    font-weight:bold;
+            font-weight: bold;
 
-    transition:0.2s;
-}
+            transition: 0.2s;
+        }
 
-.back-btn:hover{
+        .back-btn:hover {
 
-    background:#e2e8f0;
-}
-.grid{
+            background: #e2e8f0;
+        }
 
-    display:grid;
+        .grid {
 
-    grid-template-columns:
-    repeat(auto-fill,minmax(300px,1fr));
+            display: grid;
 
-    gap:20px;
-}
+            grid-template-columns:
+                repeat(auto-fill, minmax(300px, 1fr));
 
-.card{
+            gap: 20px;
+        }
 
-    background:
-    rgba(255,255,255,0.95);
+        .card {
 
-    border-radius:22px;
+            background:
+                rgba(255, 255, 255, 0.95);
 
-    padding:25px;
+            border-radius: 22px;
 
-    box-shadow:
-    0 10px 30px rgba(0,0,0,0.15);
+            padding: 25px;
 
-    transition:0.25s;
-}
-.card:hover{
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.15);
 
-    transform:translateY(-5px);
-}
+            transition: 0.25s;
+        }
 
-.card h2{
+        .card:hover {
 
-    margin-bottom:10px;
+            transform: translateY(-5px);
+        }
 
-    color:#1e293b;
-}
+        .card h2 {
 
-.info{
+            margin-bottom: 10px;
 
-    margin-bottom:8px;
+            color: #1e293b;
+        }
 
-    color:#475569;
-}
+        .info {
 
-.badge{
+            margin-bottom: 8px;
 
-    display:inline-block;
+            color: #475569;
+        }
 
-    padding:6px 12px;
+        .badge {
 
-    border-radius:999px;
+            display: inline-block;
 
-    background:#f59e0b;
+            padding: 6px 12px;
 
-    color:white;
+            border-radius: 999px;
 
-    font-size:13px;
+            background: #f59e0b;
 
-    margin-top:10px;
-}
+            color: white;
 
-.btn{
+            font-size: 13px;
 
-    display:block;
+            margin-top: 10px;
+        }
 
-    width:100%;
+        .btn {
 
-    margin-top:20px;
+            display: block;
 
-    padding:13px;
+            width: 100%;
 
-    border:none;
+            margin-top: 20px;
 
-    border-radius:14px;
+            padding: 13px;
 
-    background:
-    linear-gradient(
-        135deg,
-        #22c55e,
-        #16a34a
-    );
+            border: none;
 
-    color:white;
+            border-radius: 14px;
 
-    cursor:pointer;
+            background:
+                linear-gradient(135deg,
+                    #22c55e,
+                    #16a34a);
 
-    font-weight:bold;
+            color: white;
 
-    transition:0.2s;
+            cursor: pointer;
 
-    box-shadow:
-    0 6px 15px rgba(34,197,94,0.3);
-}
+            font-weight: bold;
 
-.btn:hover{
+            transition: 0.2s;
 
-    transform:translateY(-2px);
+            box-shadow:
+                0 6px 15px rgba(34, 197, 94, 0.3);
+        }
 
-    opacity:0.95;
-}
+        .btn:hover {
 
-</style>
+            transform: translateY(-2px);
+
+            opacity: 0.95;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<div class="top-bar">
+    <div class="top-bar">
 
-    <h1>🍳 Quản lý bếp</h1>
+        <h1>🍳 Quản lý bếp</h1>
 
-    <a
-        href="danh_sach_ban.php"
-        class="back-btn"
-    >
-        ← Quay lại
-    </a>
-
-</div>
-
-<div class="grid">
-
-<?php foreach($danhSach as $row){ ?>
-
-<div class="card">
-
-    <h2>
-
-        <?= $row['ten_mon'] ?>
-
-    </h2>
-
-    <div class="info">
-
-        Bàn:
-        <?= $row['so_ban'] ?>
+        <a
+            href="danh_sach_ban.php"
+            class="back-btn">
+            ← Quay lại
+        </a>
 
     </div>
 
-    <div class="info">
+    <div class="grid">
 
-        Số lượng:
-        <?= $row['so_luong'] ?>
+        <?php foreach ($danhSach as $row) { ?>
+
+            <div class="card">
+
+                <h2>
+
+                    <?= $row['ten_mon'] ?>
+
+                </h2>
+
+                <div class="info">
+
+                    Bàn:
+                    <?= $row['so_ban'] ?>
+
+                </div>
+
+                <div class="info">
+
+                    Số lượng:
+                    <?= $row['so_luong'] ?>
+
+                </div>
+
+                <?php
+
+                $text = "Chờ nấu";
+
+                $class = "#f59e0b";
+
+                if ($row['trang_thai'] == 'dang_nau') {
+
+                    $text = "Đang nấu";
+
+                    $class = "#3b82f6";
+                }
+
+                if ($row['trang_thai'] == 'da_phuc_vu') {
+
+                    $text = "Đã hoàn thành";
+
+                    $class = "#22c55e";
+                }
+
+                ?>
+
+                <span
+                    class="badge"
+                    style="background:<?= $class ?>">
+
+                    <?= $text ?>
+
+                </span>
+
+                <form
+                    action="cap_nhat_bep.php"
+                    method="POST">
+
+                    <input
+                        type="hidden"
+                        name="id"
+                        value="<?= $row['id'] ?>">
+
+                    <button class="btn">
+
+                        Hoàn thành món
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        <?php } ?>
 
     </div>
-
-    <span class="badge">
-
-        Chờ nấu
-
-    </span>
-
-    <form
-        action="cap_nhat_bep.php"
-        method="POST"
-    >
-
-        <input
-            type="hidden"
-            name="id"
-            value="<?= $row['id'] ?>"
-        >
-
-        <button class="btn">
-
-            Hoàn thành món
-
-        </button>
-
-    </form>
-
-</div>
-
-<?php } ?>
-
-</div>
 
 </body>
+
 </html>

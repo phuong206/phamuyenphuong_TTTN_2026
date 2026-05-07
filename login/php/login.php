@@ -73,11 +73,11 @@ if ($user) {
 
             ?
 
-            "../../admin/bang_dieu_khien.php"
+            "../admin/bang_dieu_khien.php"
 
             :
 
-            "../../staff/php/danh_sach_ban.php"
+            "../staff/php/danh_sach_ban.php"
 
     ]);
 } else {

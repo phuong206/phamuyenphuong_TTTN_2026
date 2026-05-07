@@ -9,7 +9,7 @@ $id_ban = $_POST['id_ban'] ?? 0;
 $tong = $_POST['tong'] ?? 0;
 $phuong_thuc = $_POST['phuong_thuc'] ?? '';
 
-if (!$id_don || !$id_ban || !$tong) {
+if (!$id_don || !$id_ban) {
     die("Thiếu dữ liệu thanh toán");
 }
 

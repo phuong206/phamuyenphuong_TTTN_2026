@@ -10,7 +10,12 @@ $id_ban = $_GET['id_ban'] ?? 0;
 /* lấy đơn */
 $stmt = $conn->prepare("
     SELECT * FROM don_hang 
-    WHERE id_ban = ? AND trang_thai = 'cho_xu_ly'
+    WHERE id_ban = ?
+
+    AND trang_thai != 'da_thanh_toan'
+
+    AND trang_thai != 'da_huy'
+
     ORDER BY id DESC LIMIT 1
 ");
 $stmt->execute([$id_ban]);
@@ -35,127 +40,230 @@ $stmt->execute([$id_don]);
 $ds = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 /* tính tiền */
+
 $tong = 0;
-foreach ($ds as $m) {
-    $tong += $m['so_luong'] * $m['gia'];
+
+$isBuffet =
+    ($don['loai'] ?? '') == 'buffet';
+
+$goi =
+    $don['id_goi_buffet'] ?? 0;
+
+/* buffet */
+
+if ($isBuffet) {
+
+    $tong +=
+        ($goi * 1000)
+        *
+        ($don['so_khach'] ?? 1);
 }
+
+/* món */
+
+foreach ($ds as $m) {
+
+    /* món lẻ */
+
+    if (!$isBuffet) {
+
+        $tong +=
+            $m['so_luong']
+            *
+            $m['gia'];
+    }
+
+    /* buffet nhưng gọi ngoài */ else {
+
+        if (($m['goi_buffet'] ?? 0) > $goi) {
+
+            $tong +=
+                $m['so_luong']
+                *
+                $m['gia'];
+        }
+    }
+}
+
+/* tráng miệng */
+
+if (($don['trang_mieng'] ?? 0) == 1) {
+
+    $tong +=
+        49000
+        *
+        ($don['so_khach'] ?? 1);
+}
+
+/* VAT */
+
+$tong += $tong * 0.08;
 
 /* map trạng thái */
 $map = [
+
     "chua_gui" => "Chưa gửi",
+
     "dang_nau" => "Đang nấu",
-    "da_phuc_vu" => "Đã phục vụ"
+
+    "da_nau" => "Đã nấu",
+
+    "da_phuc_vu" => "Đã hoàn thành"
+
 ];
 ?>
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8">
-<title>Bàn phục vụ</title>
+    <meta charset="UTF-8">
+    <title>Bàn phục vụ</title>
 
-<style>
-body{
-    font-family:Segoe UI;
-    background:linear-gradient(135deg,#0f172a,#1e3a8a);
-    padding:30px;color:white;
-}
+    <style>
+        body {
+            font-family: Segoe UI;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            padding: 30px;
+            color: white;
+        }
 
-.box{
-    background:#f8fafc;color:black;
-    border-radius:12px;padding:15px;margin-bottom:15px;
-}
+        .box {
+            background: #f8fafc;
+            color: black;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
 
-.mon{
-    display:flex;justify-content:space-between;
-    padding:10px;border-bottom:1px solid #ddd;
-}
+        .mon {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
 
-.tag{padding:4px 8px;border-radius:6px;font-size:12px;}
-.chua_gui{background:#e2e8f0;}
-.dang_nau{background:#94a3b8;color:white;}
-.da_phuc_vu{background:#0f172a;color:white;}
+        .tag {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
 
-.btn{padding:10px;border:none;border-radius:8px;cursor:pointer;}
-.btn-dark{background:#0f172a;color:white;}
-.btn-outline{border:1px solid #ccc;background:white;}
-</style>
+        .chua_gui {
+            background: #e2e8f0;
+        }
+
+        .dang_nau {
+            background: #94a3b8;
+            color: white;
+        }
+
+        .da_phuc_vu {
+            background: #0f172a;
+            color: white;
+        }
+
+        .btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-dark {
+            background: #0f172a;
+            color: white;
+        }
+
+        .btn-outline {
+            border: 1px solid #ccc;
+            background: white;
+        }
+
+        .da_phuc_vu {
+
+            background: #22c55e;
+
+            color: white;
+
+        }
+    </style>
 </head>
 
 <body>
 
-<h2>Bàn <?= $id_ban ?> - Đang phục vụ</h2>
+    <h2>Bàn <?= $id_ban ?> - Đang phục vụ</h2>
 
-<div class="box">
-<b>Số khách:</b> <?= $so_khach ?>
-</div>
-
-<div class="box">
-<h3>Danh sách món đã gọi</h3>
-
-<?php foreach($ds as $m): ?>
-<div class="mon">
-    <div>
-        <?= $m['ten_mon'] ?> <br>
-        SL: <?= $m['so_luong'] ?>
+    <div class="box">
+        <b>Số khách:</b> <?= $so_khach ?>
     </div>
 
-    <div class="tag <?= $m['trang_thai'] ?>">
-        <?= $map[$m['trang_thai']] ?>
+    <div class="box">
+        <h3>Danh sách món đã gọi</h3>
+
+        <?php foreach ($ds as $m): ?>
+            <div class="mon">
+                <div>
+                    <?= $m['ten_mon'] ?> <br>
+                    SL: <?= $m['so_luong'] ?>
+                </div>
+
+                <div class="tag <?= $m['trang_thai'] ?>">
+                    <?= $map[$m['trang_thai']] ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+
     </div>
-</div>
-<?php endforeach; ?>
 
-</div>
+    <div class="box">
 
-<div class="box">
+        <div style="display:flex;justify-content:space-between">
+            <span>Tổng:</span>
+            <b><?= number_format($tong) ?>đ</b>
+        </div>
 
-<div style="display:flex;justify-content:space-between">
-    <span>Tổng:</span>
-    <b><?= number_format($tong) ?>đ</b>
-</div>
+        <br>
 
-<br>
+        <button
+            class="btn btn-outline"
+            onclick="guiBep()">
+            Gửi bếp
+        </button>
 
-<button
-    class="btn btn-outline"
-    onclick="guiBep()"
->
-    Gửi bếp
-</button>
+        <?php if ($_SESSION['id_vai_tro'] == 6) { ?>
 
-<?php if($_SESSION['id_vai_tro'] == 6){ ?>
+            <button
+                class="btn btn-outline"
+                onclick="location.href='bep.php'">
+                🍳 Bếp
+            </button>
 
-<button
-    class="btn btn-outline"
-    onclick="location.href='bep.php'"
->
-    🍳 Bếp
-</button>
+        <?php } ?>
 
-<?php } ?>
-
-<button
-    class="btn btn-dark"
-    onclick="
+        <button
+            class="btn btn-dark"
+            onclick="
         location.href=
         'thanh_toan.php?id_don=<?= $id_don ?>'
-    "
->
-    Thanh toán
-</button>
+    ">
+            Thanh toán
+        </button>
 
-</div>
+    </div>
 
-<script>
-function guiBep(){
-    fetch("../xu_ly/gui_bep.php",{
-        method:"POST",
-        headers:{"Content-Type":"application/x-www-form-urlencoded"},
-        body:"id_don=<?= $id_don ?>"
-    }).then(()=>location.reload());
-}
-</script>
+    <script>
+        function guiBep() {
+            fetch("../xu_ly/gui_bep.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "id_don=<?= $id_don ?>"
+            }).then(() => location.reload());
+        }
+    </script>
 
 </body>
+
 </html>

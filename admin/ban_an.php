@@ -99,9 +99,24 @@ if(isset($_POST['sua'])) {
 ========================= */
 
 $sql = "
-SELECT *
-FROM ban
-ORDER BY id ASC
+SELECT 
+    b.*,
+    (
+        SELECT COUNT(*) 
+        FROM don_hang d 
+        WHERE d.id_ban = b.id 
+        AND d.trang_thai != 'da_thanh_toan'
+        AND d.trang_thai != 'da_huy'
+    ) as co_khach,
+    (
+        SELECT GROUP_CONCAT(CONCAT(d.so_khach, ' khách') SEPARATOR ', ')
+        FROM don_hang d 
+        WHERE d.id_ban = b.id 
+        AND d.trang_thai != 'da_thanh_toan'
+        AND d.trang_thai != 'da_huy'
+    ) as danh_sach_khach
+FROM ban b
+ORDER BY b.id ASC
 ";
 
 $stmt = $conn->prepare($sql);
@@ -198,7 +213,7 @@ $dsBan = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $trangThai = "Trống";
         $class = "hoan-thanh";
 
-        if($row['trang_thai'] == 2){
+        if($row['co_khach'] > 0){
 
             $trangThai = "Có khách";
             $class = "dang-cho";
@@ -233,6 +248,12 @@ $dsBan = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </p>
 
             <br>
+
+            <?php if($row['danh_sach_khach']): ?>
+                <p style="color: #666; font-size: 14px;">
+                    👥 <?= htmlspecialchars($row['danh_sach_khach']) ?>
+                </p>
+            <?php endif; ?>
 
             <p>
 

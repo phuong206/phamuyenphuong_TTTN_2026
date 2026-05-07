@@ -8,7 +8,7 @@ $stmt = $conn->query("
 SELECT tb.*, b.so_ban
 FROM thong_bao_nhan_vien tb
 JOIN ban b ON b.id = tb.id_ban
-WHERE tb.trang_thai = 'chua_xu_ly'
+WHERE tb.trang_thai = 'cho_xu_ly'
 ORDER BY tb.id DESC
 ");
 
@@ -83,7 +83,7 @@ h2{
 
 <?php foreach($ds as $tb): ?>
 
-<div class="card" onclick="location.href='hien_thi_thong_bao.php'">
+<div class="card">
 
     <b>🔔 Bàn <?= $tb['so_ban'] ?> đang gọi nhân viên</b>
 
