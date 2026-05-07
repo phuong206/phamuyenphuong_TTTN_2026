@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once __DIR__ . "/../../config/db.php";
 
 $db = new Database();
@@ -116,10 +117,32 @@ body{
 
 <br>
 
-<button class="btn btn-outline" onclick="guiBep()">Gửi bếp</button>
-<button class="btn btn-dark"
-onclick="location.href='thanh_toan.php?id_don=<?= $id_don ?>'">
-Thanh toán
+<button
+    class="btn btn-outline"
+    onclick="guiBep()"
+>
+    Gửi bếp
+</button>
+
+<?php if($_SESSION['id_vai_tro'] == 6){ ?>
+
+<button
+    class="btn btn-outline"
+    onclick="location.href='bep.php'"
+>
+    🍳 Bếp
+</button>
+
+<?php } ?>
+
+<button
+    class="btn btn-dark"
+    onclick="
+        location.href=
+        'thanh_toan.php?id_don=<?= $id_don ?>'
+    "
+>
+    Thanh toán
 </button>
 
 </div>
